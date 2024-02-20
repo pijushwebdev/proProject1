@@ -79,7 +79,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         unique: true,
         message: 'id already exists'
     },
-    user:{
+    user: {
         type: Schema.Types.ObjectId,
         required: [true, "user id required"],
         unique: true,
@@ -145,9 +145,9 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     },
     admissionSemester: {
         type: Schema.Types.ObjectId,
-        ref:'AcademicSemester'
+        ref: 'AcademicSemester'
     },
-    faculty:{
+    faculty: {
         type: Schema.Types.ObjectId,
         ref: 'AcademicFaculty'
     },
@@ -188,6 +188,25 @@ studentSchema.pre('findOne', function (next) {
 studentSchema.pre('aggregate', function (next) {
     // console.log(this.pipeline); 
     this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } })
+
+    next();
+})
+
+studentSchema.pre('save', async function (next) {
+    const isExists = await Student.findOne({ email: this.email })
+    if(isExists){
+        throw new Error('Student is already exists');
+    }
+    next();
+})
+
+studentSchema.pre('findOneAndUpdate', async function (next) {
+    const query = this.getQuery();
+    const isExist = await Student.findOne(query);
+
+    if (!isExist) {
+        throw new Error("This student does not exists")
+    }
 
     next();
 })

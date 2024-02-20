@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 // import { TStudent } from "./student.interface";
 import { Student } from "./student.schema";
+import { TStudent } from "./student.interface";
 
 
 // const createStudentIntoDB = async (studentData: TStudent) => {
@@ -43,6 +44,11 @@ const getSingleStudentFromDBbyAggregate = async (_id: string) => {
     return result;
 }
 
+const updateAStudentFromDB = async (id: string, payload: Partial<TStudent>) => {
+    const result = await Student.findOneAndUpdate({_id: id}, payload, { new: true});
+    return result;
+}
+
 const deleteSingleStudentFromDB = async (_id: string) => {
     // const result = await Student.deleteOne({ _id });
     // return result;
@@ -60,4 +66,5 @@ export const studentServices = {
     getSingleStudentFromDB,
     getSingleStudentFromDBbyAggregate,
     deleteSingleStudentFromDB,
+    updateAStudentFromDB,
 }

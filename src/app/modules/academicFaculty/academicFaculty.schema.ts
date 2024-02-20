@@ -14,4 +14,4 @@ const academicFacultySchema = new Schema<TAcademicFaculty>({
 }
 )
 
-export const AcademicFaculty = model('academicFaculty', academicFacultySchema);
+export const AcademicFaculty = model('AcademicFaculty', academicFacultySchema);

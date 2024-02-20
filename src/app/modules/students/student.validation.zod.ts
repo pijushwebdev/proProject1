@@ -55,6 +55,35 @@ const createStudentZodSchema = z.object({
     })
 });
 
-export const zodStudentValidation = {
-    createStudentZodSchema
+const updateStudentZodSchema = z.object({
+    body: z.object({
+        students: z.object({
+            name: NameZodSchema.optional(),
+            email: z.string().email().optional(),
+            phone: z.string().optional(),
+            gender: z.enum(["male", "female"]).optional(),
+            age: z.number().int().optional(),
+            avatar: z.string().optional(),
+            bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]).optional(),
+            nationality: z.string().min(1).optional(),
+            address: AddressZodSchema.optional(),
+            class: z.string().min(1).optional(),
+            department: z.string().min(1).optional(),
+            guardian: z.object({
+                name: NameZodSchema.optional(),
+                relation: z.string().min(1).optional(),
+                email: z.string().email().optional(),
+                phone: z.string().optional(),
+            }).optional(),
+            roll: z.number().int().optional(),
+            section: z.string().min(1).optional(),
+            admissionSemester: z.string().optional(),
+            faculty: z.string().optional()
+        })
+    })
+});
+
+export const studentValidations = {
+    createStudentZodSchema,
+    updateStudentZodSchema
 }

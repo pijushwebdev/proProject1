@@ -13,7 +13,9 @@ import { generatedStudentId } from "./user.utils";
 const createStudentIntoDB = async (password: string, payload: TStudent) => {  //payload ---> studentData
 
     const userData: Partial<TUser> = {};
-    // const existingUser = await Student.isUserExists(studentData.email);
+
+    // we can handle it using instance, static method in schema and also like this:
+    // const existingUser = await Student.isUserExists(payload.email);
     //     if (existingUser) {
     //         throw new Error("User already exists");
     //     }
@@ -27,9 +29,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {  //
     //generate user id 
     userData.id = await generatedStudentId(semesterInfo)
 
-    
     const newUser = await User.create(userData);
-    
     
     if(Object.keys(newUser).length){
         payload.id = newUser.id; // embed id

@@ -1,6 +1,7 @@
 
 import { studentServices } from "./student.service";
 import asyncTryCatch from "../../utils/asyncTryCatch";
+import sendResponse from "../../utils/sendResponse";
 
 
 const getAllStudentsData = asyncTryCatch( async (req, res) => {
@@ -55,6 +56,19 @@ const getSingleStudentByAggregate = asyncTryCatch( async (req, res) => {
     })
 })
 
+const updateAStudent = asyncTryCatch( async (req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+
+    const updatedData = await studentServices.updateAStudentFromDB(id, data);
+
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Student data updated successfully",
+        data: updatedData
+    })
+})
 
 const deleteSingleStudent = asyncTryCatch( async (req, res) => {
     
@@ -76,5 +90,6 @@ export const studentControllers = {
     getAllStudentsData,
     getSingleStudent,
     getSingleStudentByAggregate,
+    updateAStudent,
     deleteSingleStudent
 }
