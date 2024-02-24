@@ -8,7 +8,7 @@ const createDepartmentIntoDB = async (payload: TAcademicDepartment) => {
     return result;
 }
 
-const getAllDepartmentFromDB = async () => {
+const getAllDepartmentsFromDB = async () => {
     const result = await AcademicDepartment.find();
     return result;
 }
@@ -20,6 +20,6 @@ const getADepartmentFromDB = async (id: string) => {
 
 export const departmentServices = {
     createDepartmentIntoDB,
-    getAllDepartmentFromDB,
+    getAllDepartmentsFromDB,
     getADepartmentFromDB,
 }

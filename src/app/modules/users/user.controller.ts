@@ -10,10 +10,9 @@ const createStudent = asyncTryCatch( async (req, res) => {
 
     const result = await userServices.createStudentIntoDB(password, studentData); 
 
-
     // this will force to maintain the format
     sendResponse(res,{
-        statusCode: 200,
+        statusCode: 201,
         success: true,
         message: "New Student is created",
         data: result

@@ -21,7 +21,7 @@ const createSemester = asyncTryCatch(async (req, res) => {
     const data = await academicSemesterServices.createSemesterIntoDB(req.body);
 
     sendResponse(res, {
-        statusCode: 200,
+        statusCode: 201,
         message: "New semester has been created",
         success: true,
         data: data
@@ -56,7 +56,7 @@ const updateASemester = asyncTryCatch ( async (req, res) => {
     const updatedData = await academicSemesterServices.updateASemesterFromDB(id, data);
 
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         success: true,
         message: "Semester info successfully updated",
         data: updatedData
@@ -66,7 +66,7 @@ const updateASemester = asyncTryCatch ( async (req, res) => {
 
 
 
-export const academicSemesterControllers = {
+export const semesterControllers = {
     createSemester,
     getAllSemester,
     getSingleSemester,

@@ -10,6 +10,10 @@ router.post('/create-department',
     requestValidation(AcademicDepartmentValidations.createAcademicDepartmentValidation),
     departmentController.createDepartment
 );
+ 
+router.get('/getAllDepartments', departmentController.getAllDepartments);
+
+router.get('/getADepartment', departmentController.getADepartment);
 
 
 export const departmentRoutes = router;

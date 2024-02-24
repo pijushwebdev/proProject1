@@ -10,7 +10,8 @@ export const router = express.Router();
 
 router.get('/getAllStudents', studentControllers.getAllStudentsData);
 
-router.get('/getStudent/:_id', studentControllers.getSingleStudent);
+router.get('/getAStudent/:_id', studentControllers.getSingleStudent);
+
 router.get('/getStudentByAggregate/:_id', studentControllers.getSingleStudentByAggregate);
 
 router.patch('/update-student/:id',
@@ -18,7 +19,7 @@ router.patch('/update-student/:id',
     studentControllers.updateAStudent
 );
 
-router.delete('/deleteAStudent/:_id', studentControllers.deleteSingleStudent);
+router.delete('/deleteAStudent/user/:userId/student/:studentId', studentControllers.deleteSingleStudent);
 
 
 export const studentsRoutes = router;

@@ -58,12 +58,12 @@ const getSingleStudentByAggregate = asyncTryCatch( async (req, res) => {
 
 const updateAStudent = asyncTryCatch( async (req, res) => {
     const id = req.params.id;
-    const data = req.body;
+    const data = req.body.students;
 
     const updatedData = await studentServices.updateAStudentFromDB(id, data);
 
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         success: true,
         message: "Student data updated successfully",
         data: updatedData
@@ -72,8 +72,10 @@ const updateAStudent = asyncTryCatch( async (req, res) => {
 
 const deleteSingleStudent = asyncTryCatch( async (req, res) => {
     
-    const id = req.params._id;
-    const data = await studentServices.deleteSingleStudentFromDB(id);
+    const userId = req.params.userId;
+    const studentId = req.params.studentId;
+
+    const data = await studentServices.deleteSingleStudentFromDB(userId, studentId);
 
     res.status(200).json({
         success: true,

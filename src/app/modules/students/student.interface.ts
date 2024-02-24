@@ -44,18 +44,19 @@ export type TStudent = {
     address: TAddress;
     guardian: TGuardian;
     class: string;
-    department: string;
     roll?: number;
     section?: string;
     admissionSemester: Types.ObjectId;
-    faculty: Types.ObjectId;
+    academicDepartment: Types.ObjectId;
     isDeleted: boolean;
 }
 
 //custom static method
  export interface StudentModel extends Model<TStudent> {
     isUserExists(email: string) : Promise<TStudent | null>;
+    isStudentExists(id: string): Promise<TStudent> | null;
   }
+
 
 // custom instance method
 // export type StudentExistsMethod = {
@@ -66,5 +67,7 @@ export type TStudent = {
 
 //custom instance method
 
+
+// update
 
 

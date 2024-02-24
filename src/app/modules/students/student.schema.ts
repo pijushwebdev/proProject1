@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { StudentModel, TAddress, TGuardian, TStudent, TName, TBloodGroup } from "./student.interface";
+import AppError from "../../ErrorHandlers/AppError";
 // import bcrypt from 'bcrypt';
 // import config from "../../config";
 
@@ -127,11 +128,6 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         required: [true, 'Class is required'],
         trim: true
     },
-    department: {
-        type: String,
-        required: [true, 'Department is required'],
-        trim: true
-    },
     guardian: {
         type: GuardianSchema,
         required: [true, 'Guardian details are required']
@@ -147,9 +143,9 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         type: Schema.Types.ObjectId,
         ref: 'AcademicSemester'
     },
-    faculty: {
+    academicDepartment: {
         type: Schema.Types.ObjectId,
-        ref: 'AcademicFaculty'
+        ref: 'AcademicDepartment'  // model name
     },
     isDeleted: {
         type: Boolean,
@@ -178,9 +174,10 @@ studentSchema.pre('find', function (next) {
     this.find({ isDeleted: { $ne: true } }) // filter data through find// isDeleted: false data will be found
     next();
 })
-studentSchema.pre('findOne', function (next) {
+studentSchema.pre('findOne', async function (next) {
     // console.log(this); // 'this' means 'find'
     this.find({ isDeleted: { $ne: true } }) // filter data through findOne // isDeleted: false data will be found
+
     next();
 })
 
@@ -192,10 +189,12 @@ studentSchema.pre('aggregate', function (next) {
     next();
 })
 
+
+
 studentSchema.pre('save', async function (next) {
     const isExists = await Student.findOne({ email: this.email })
-    if(isExists){
-        throw new Error('Student is already exists');
+    if (isExists) {
+        throw new AppError(404,'Student is already exists');
     }
     next();
 })
@@ -205,14 +204,17 @@ studentSchema.pre('findOneAndUpdate', async function (next) {
     const isExist = await Student.findOne(query);
 
     if (!isExist) {
-        throw new Error("This student does not exists")
+        throw new AppError(404,"This student does not exists")
     }
 
     next();
 })
 
 
-
+studentSchema.statics.isStudentExists = async function (id: string) {
+    const existStudent = await Student.findById(id);
+    return existStudent;
+}
 
 //custom static method
 studentSchema.statics.isUserExists = async function (email: string) {

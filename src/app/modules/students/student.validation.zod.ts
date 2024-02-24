@@ -30,7 +30,7 @@ const createStudentZodSchema = z.object({
         }),
 
         students: z.object({
-            name: NameZodSchema,
+            name: NameZodSchema.optional(),
             email: z.string().email(),
             phone: z.string(),
             gender: z.enum(["male", "female"]),
@@ -38,11 +38,10 @@ const createStudentZodSchema = z.object({
             avatar: z.string().optional(),
             bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]).optional(),
             nationality: z.string().min(1),
-            address: AddressZodSchema,
+            address: AddressZodSchema.optional(),
             class: z.string().min(1),
-            department: z.string().min(1),
             guardian: z.object({
-                name: NameZodSchema,
+                name: NameZodSchema.optional(),
                 relation: z.string().min(1),
                 email: z.string().email(),
                 phone: z.string(),
@@ -50,15 +49,37 @@ const createStudentZodSchema = z.object({
             roll: z.number().int().optional(),
             section: z.string().min(1).optional(),
             admissionSemester: z.string(),
-            faculty: z.string()
+            academicDepartment: z.string()
         })
     })
 });
 
+
+// update 
+const UpdateNameZodSchema = z.object({
+    firstName: z.string().min(1).max(20).trim().refine(value => /^[A-Z]/.test(value), {
+        message: "FirstName must be start with capital letter"
+    }).optional(),
+    middleName: z.string().max(20).optional().optional(),
+    lastName: z.string().min(1).max(20).optional(),
+}).optional();
+
+const UpdateAddressZodSchema = z.object({
+    permanentAddress: z.object({
+        city: z.string().min(1).optional(),
+        road: z.string().min(1).optional(),
+        zip_code: z.string().min(1).optional(),
+    }).optional(),
+    presentAddress: z.object({
+        city: z.string().min(1).optional(),
+        road: z.string().min(1).optional(),
+        zip_code: z.string().min(1).optional(),
+    }).optional(),
+});
 const updateStudentZodSchema = z.object({
     body: z.object({
         students: z.object({
-            name: NameZodSchema.optional(),
+            name: UpdateNameZodSchema.optional(),
             email: z.string().email().optional(),
             phone: z.string().optional(),
             gender: z.enum(["male", "female"]).optional(),
@@ -66,11 +87,10 @@ const updateStudentZodSchema = z.object({
             avatar: z.string().optional(),
             bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]).optional(),
             nationality: z.string().min(1).optional(),
-            address: AddressZodSchema.optional(),
+            address: UpdateAddressZodSchema.optional(),
             class: z.string().min(1).optional(),
-            department: z.string().min(1).optional(),
             guardian: z.object({
-                name: NameZodSchema.optional(),
+                name: UpdateNameZodSchema.optional(),
                 relation: z.string().min(1).optional(),
                 email: z.string().email().optional(),
                 phone: z.string().optional(),
@@ -78,7 +98,7 @@ const updateStudentZodSchema = z.object({
             roll: z.number().int().optional(),
             section: z.string().min(1).optional(),
             admissionSemester: z.string().optional(),
-            faculty: z.string().optional()
+            academicDepartment: z.string().optional()
         })
     })
 });

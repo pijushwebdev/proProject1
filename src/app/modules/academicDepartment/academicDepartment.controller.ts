@@ -16,8 +16,8 @@ const createDepartment = asyncTryCatch( async (req,res) => {
 });
 
 
-const getAllDepartment = asyncTryCatch( async (req, res) => {
-    const data = await departmentServices.getAllDepartmentFromDB();
+const getAllDepartments = asyncTryCatch( async (req, res) => {
+    const data = await departmentServices.getAllDepartmentsFromDB();
 
     sendResponse(res, {
         statusCode: 200,
@@ -42,6 +42,6 @@ const getADepartment = asyncTryCatch( async(req,res) => {
 
 export const departmentController = {
     createDepartment,
-    getAllDepartment,
+    getAllDepartments,
     getADepartment,
 }

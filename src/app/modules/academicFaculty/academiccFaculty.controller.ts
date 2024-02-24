@@ -43,7 +43,7 @@ const updateAFaculty = asyncTryCatch( async (req,res) => {
     const updatedData = await facultyServices.updateFacultyFromDB(id, data);
 
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         success: true,
         message: "Faculty updated",
         data: updatedData
