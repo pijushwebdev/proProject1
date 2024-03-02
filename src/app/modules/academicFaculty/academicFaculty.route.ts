@@ -1,23 +1,23 @@
 import { Router } from "express";
-import { facultyController } from "./academiccFaculty.controller";
+import { academicFacultyController } from "./academicFaculty.controller";
 import requestValidation from "../../middleware/requestValidation";
-import { FacultyValidations } from "./academicFaculty.validation";
+import { academicFacultyValidations } from "./academicFaculty.validation";
 
 
 const router = Router();
 
-router.post('/create-faculty',
-    requestValidation(FacultyValidations.createFacultyValidation),
-    facultyController.createFaculty
+router.post('/create-academic-faculty',
+    requestValidation(academicFacultyValidations.createAcademicFacultyValidation),
+    academicFacultyController.createAcademicFaculty
 );
 
-router.get('/getFaculties', facultyController.getAllFaculty);
+router.get('/getAcademicFaculties', academicFacultyController.getAllAcademicFaculty);
 
-router.get('/getAFaculty/:id', facultyController.getSingleFaculty);
+router.get('/getAcademicFaculty/:id', academicFacultyController.getSingleAcademicFaculty);
 
-router.patch('/updateAFaculty/:id',
-    requestValidation(FacultyValidations.updateFacultyValidation),
-    facultyController.updateAFaculty
+router.patch('/updateAcademicFaculty/:id',
+    requestValidation(academicFacultyValidations.updateAcademicFacultyValidation),
+    academicFacultyController.updateAcademicFaculty
 );
 
-export const FacultyRoutes = router;
+export const AcademicFacultyRoutes = router;

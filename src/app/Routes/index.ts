@@ -2,7 +2,7 @@ import { Router } from "express";
 import { usersRoutes } from "../modules/users/user.route";
 import { studentsRoutes } from "../modules/students/student.route";
 import { AcademicSemesterRoutes } from "../modules/academicSemester/academicSemester.route";
-import { FacultyRoutes } from "../modules/academicFaculty/academicFaculty.route";
+import { AcademicFacultyRoutes } from "../modules/academicFaculty/academicFaculty.route";
 import { departmentRoutes } from "../modules/academicDepartment/academicDepartment.route";
 
 
@@ -23,7 +23,7 @@ const moduleRoutes = [
     },
     {
         path: '/faculties',
-        route: FacultyRoutes
+        route: AcademicFacultyRoutes
     },
     {
         path: '/departments',

@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { semesterControllers } from "./academicSemester.controller";
 import requestValidation from "../../middleware/requestValidation";
-import { AcademicSemesterValidations } from "./academicSemester.validation";
+import { academicSemesterValidations } from "./academicSemester.validation";
 
 
 const router = Router();
 
 router.post('/create-semester',
-    requestValidation(AcademicSemesterValidations.createAcademicSemesterValidation),
+    requestValidation(academicSemesterValidations.createAcademicSemesterValidation),
     semesterControllers.createSemester
 );
 
@@ -15,7 +15,7 @@ router.get('/getAllSemesters', semesterControllers.getAllSemester);
 router.get('/getASemester/:semesterId', semesterControllers.getSingleSemester);
 
 router.patch('/update-semester/:semesterId',
-    requestValidation(AcademicSemesterValidations.updateAcademicSemesterValidation),
+    requestValidation(academicSemesterValidations.updateAcademicSemesterValidation),
     semesterControllers.updateASemester
 );
 

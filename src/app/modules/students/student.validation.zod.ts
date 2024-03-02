@@ -76,6 +76,8 @@ const UpdateAddressZodSchema = z.object({
         zip_code: z.string().min(1).optional(),
     }).optional(),
 });
+
+//main update schema
 const updateStudentZodSchema = z.object({
     body: z.object({
         students: z.object({

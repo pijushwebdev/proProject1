@@ -2,7 +2,7 @@ import { TAcademicSemester } from "../academicSemester/academicSemester.interfac
 import { User } from "./user.schema";
 
 
-
+//student id generator
 export const generatedStudentId = async (payload: TAcademicSemester) => {
 
     let currentId = (0).toString();
@@ -32,3 +32,4 @@ const findLastStudentId = async () => {
 
     return lastAdmittedStudent?.id;
 }
+// student id generator end
