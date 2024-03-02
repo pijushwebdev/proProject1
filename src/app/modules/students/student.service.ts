@@ -4,6 +4,7 @@ import { Student } from "./student.schema";
 import { TStudent } from "./student.interface";
 import AppError from "../../ErrorHandlers/AppError";
 import { User } from "../users/user.schema";
+// import QueryBuilder from "../../builders/QueryBuilder";
 
 
 // const createStudentIntoDB = async (studentData: TStudent) => {
@@ -106,13 +107,65 @@ const deleteSingleStudentFromDB = async (userId: string, studentId: string) => {
     } catch (error) {
         await session.abortTransaction();
         await session.endSession();
-        throw new AppError(400, 'Failed to delete the student');
+        throw new AppError(400, `${error}`);
     }
 
     // //soft delete  // for this we need help of 'pre' middleware hook
     // const result = await Student.updateOne({ _id }, { isDeleted: true });
     // return result;
 }
+
+const searchInStudentsFromDB = async (query: Record<string, unknown>) => {
+
+    let searchTerm = '';
+    const copyQuery = { ...query };
+    if (query?.searchTerm) {
+        searchTerm = query.searchTerm as string;
+    }
+    // partial match  for searching 
+    const searchQuery = Student.find({
+        $or: ['email', 'name.firstName', 'address.presentAddress'].map((field) => ({
+            [field]: { $regex: searchTerm, $options: 'i' }
+        }))
+    });
+    //filtering
+    const excludingField = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+    excludingField.map(el => delete copyQuery[el]);
+    // console.log({ query }, { copyQuery });
+    const filterQuery = searchQuery.find(copyQuery).populate('admissionSemester').populate({
+        path: 'academicDepartment',
+        populate: {
+            path: 'academicFaculty'
+        }
+    });
+    let sort = '-createdAt';
+    if (query?.sort) {
+        sort = query?.sort as string;
+    }
+    const sortQuery = filterQuery.sort(sort);
+    let limit = 1;
+    if (query.limit) {
+        limit = Number(query.limit);
+    }
+    //pagination
+    let skip = 0;
+    let page = 1;
+    if (query?.page) {
+        page = Number(query.page);
+        skip = Number(page - 1) * limit;
+    }
+    const paginateQuery = sortQuery.skip(skip);
+    // paginate = sortQuery.skip(skip).limit(limit);
+    const limitQuery = paginateQuery.limit(limit);
+    // field limiting
+    let fields = '-__v';
+    if (query?.fields) {
+        fields = String(query.fields).split(',').join(' ');
+    }
+    const fieldsQuery = await limitQuery.select(fields);
+    return fieldsQuery;
+}
+
 
 
 
@@ -123,4 +176,5 @@ export const studentServices = {
     getSingleStudentFromDBbyAggregate,
     deleteSingleStudentFromDB,
     updateAStudentFromDB,
+    searchInStudentsFromDB,
 }

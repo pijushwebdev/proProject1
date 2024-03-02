@@ -1,4 +1,4 @@
-// Cast error provided by mongoose
+// Cast error provided by mongoose when (like: an invalid id is provide (/:id))
 
 import mongoose from "mongoose";
 import { TErrorSource, TGenericErrorResponse } from "../interface/errors";

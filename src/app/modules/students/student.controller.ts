@@ -85,6 +85,19 @@ const deleteSingleStudent = asyncTryCatch( async (req, res) => {
 
 })
 
+const searchInStudents = asyncTryCatch (async (req, res) => {
+
+    
+    const data = await studentServices.searchInStudentsFromDB(req.query);
+
+    sendResponse(res, {
+        statusCode: 200,
+        message: 'Student data is retrieve',
+        success: true,
+        data: data
+    })
+})
+
 
 
 export const studentControllers = {
@@ -93,5 +106,6 @@ export const studentControllers = {
     getSingleStudent,
     getSingleStudentByAggregate,
     updateAStudent,
-    deleteSingleStudent
+    deleteSingleStudent,
+    searchInStudents,
 }

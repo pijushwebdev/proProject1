@@ -21,5 +21,7 @@ router.patch('/update-student/:id',
 
 router.delete('/deleteAStudent/user/:userId/student/:studentId', studentControllers.deleteSingleStudent);
 
+router.get('/', studentControllers.searchInStudents);
+
 
 export const studentsRoutes = router;

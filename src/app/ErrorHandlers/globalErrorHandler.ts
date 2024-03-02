@@ -14,8 +14,8 @@ import handleDuplicateError from "./handleDuplicateError";
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     if (error) {
-        let statusCode = error.statusCode || 500;
-        let message = error.message || "Something went wrong";
+        let statusCode = 500;
+        let message = "Something went wrong";
 
         let errorSource: TErrorSource = [
             {
@@ -53,9 +53,8 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
 
             statusCode = simplifiedError?.statusCode;
             message = simplifiedError?.message;
-            errorSource = simplifiedError?.errorSource
+            errorSource = simplifiedError?.errorSource;
 
-            
         } else if (error instanceof AppError) {
             statusCode = error.statusCode;
             message = error.message;

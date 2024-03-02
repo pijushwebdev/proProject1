@@ -163,7 +163,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
 
 //mongoose virtual // data that does not exists but we can create// for this we need to enable virtual
 studentSchema.virtual('fullName').get(function () {
-    return (this.name.middleName ? `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}` : `${this.name.firstName} ${this.name.lastName}`);
+    return (this?.name?.middleName ? `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}` : `${this?.name?.firstName} ${this?.name?.lastName}`);
 })
 
 
@@ -188,8 +188,6 @@ studentSchema.pre('aggregate', function (next) {
 
     next();
 })
-
-
 
 studentSchema.pre('save', async function (next) {
     const isExists = await Student.findOne({ email: this.email })
