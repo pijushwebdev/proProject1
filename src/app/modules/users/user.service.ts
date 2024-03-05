@@ -6,8 +6,10 @@ import { TStudent } from "../students/student.interface";
 import { Student } from "../students/student.schema";
 import { TUser } from "./user.interface";
 import { User } from "./user.schema";
-import { generatedStudentId } from "./user.utils";
+import { generateFacultyId, generatedStudentId } from "./user.utils";
 import AppError from "../../ErrorHandlers/AppError";
+import { TFaculty } from "../faculties/faculty.interface";
+import { Faculty } from "../faculties/faculty.schema";
 
 
 
@@ -18,7 +20,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {  //
 
 
     // if password not given, use default password
-    userData.password = password || (config.default_password as string);
+    userData.password = password || (config.student_password as string);
     userData.role = "student";
 
     const semesterInfo = await AcademicSemester.findById(payload.admissionSemester) as TAcademicSemester;
@@ -64,6 +66,40 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {  //
     }
 }
 
+const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+    const userData: Partial<TUser> ={};
+
+    userData.password = password || config.faculty_password;
+    userData.role = 'faculty';
+    userData.id = await generateFacultyId();
+
+    const session = await mongoose.startSession();
+    try{
+        session.startTransaction();
+
+        const newUser = await User.create([userData], {session});
+        if(!newUser){
+            throw new AppError(400, 'Failed to create new user');
+        }
+
+        payload.id = newUser[0].id;
+        payload.user = newUser[0]._id;
+
+        const newFaculty = await Faculty.create([payload], {session});
+        if(!newFaculty){
+            throw new AppError(400,'Failed to create new faculty');
+        }
+        session.commitTransaction();
+        session.endSession();
+
+    }catch(error){
+        session.abortTransaction();
+        session.endSession();
+        throw new AppError(400, `${error}`);
+    }
+}
+
 export const userServices = {
-    createStudentIntoDB
+    createStudentIntoDB,
+    createFacultyIntoDB,
 }

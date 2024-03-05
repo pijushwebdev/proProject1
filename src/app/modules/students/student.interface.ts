@@ -28,6 +28,7 @@ export type TGuardian = {
 }
 
 export type TBloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+export type TGender = 'male' | 'female' | 'others';
 
 //main
 export type TStudent = {
@@ -36,8 +37,9 @@ export type TStudent = {
     name: TName;
     phone: string;
     email: string;
-    gender: 'male' | 'female';
+    gender: TGender;
     age: number;
+    dateOfBirth: string;
     avatar?: string;
     bloodGroup?: TBloodGroup;
     nationality: string;
@@ -65,7 +67,7 @@ export type TStudent = {
 
 // export type StudentModel =Model<TStudent, Record<string, never>, StudentExistsMethod>;
 
-//custom instance method
+//custom instance method end
 
 
 // update

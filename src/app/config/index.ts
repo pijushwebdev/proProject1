@@ -9,5 +9,7 @@ export default {
     PORT: process.env.PORT,
     database_url: process.env.MONGODB_URL,
     bcrypt_salt_round: process.env.BCRYPT_SALT_ROUND,
-    default_password: process.env.DEFAULT_PASSWORD
+    student_password: process.env.STUDENT_PASSWORD,
+    faculty_password: process.env.FACULTY_PASSWORD,
+    admin_password: process.env.ADMIN_PASSWORD,
 }

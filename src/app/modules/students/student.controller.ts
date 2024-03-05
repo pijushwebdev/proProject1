@@ -19,7 +19,7 @@ const getAllStudentsData = asyncTryCatch( async (req, res) => {
 
 const getSingleStudent = asyncTryCatch( async (req, res) => {
    
-        const id = req.params._id;
+        const id = req.params.studentId;
         const data = await studentServices.getSingleStudentFromDB(id);
 
         res.status(200).json({
@@ -57,8 +57,8 @@ const getSingleStudentByAggregate = asyncTryCatch( async (req, res) => {
 })
 
 const updateAStudent = asyncTryCatch( async (req, res) => {
-    const id = req.params.id;
-    const data = req.body.students;
+    const id = req.params.studentId;
+    const data = req.body.student;
 
     const updatedData = await studentServices.updateAStudentFromDB(id, data);
 

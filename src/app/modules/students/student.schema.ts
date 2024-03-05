@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { StudentModel, TAddress, TGuardian, TStudent, TName, TBloodGroup } from "./student.interface";
+import { StudentModel, TAddress, TGuardian, TStudent, TName, TBloodGroup, TGender } from "./student.interface";
 import AppError from "../../ErrorHandlers/AppError";
 // import bcrypt from 'bcrypt';
 // import config from "../../config";
@@ -7,7 +7,7 @@ import AppError from "../../ErrorHandlers/AppError";
 
 
 
-const NameSchema = new Schema<TName>({
+export const NameSchema = new Schema<TName>({
     firstName: {
         type: String,
         required: [true, 'First Name is required'],
@@ -56,7 +56,7 @@ const GuardianSchema = new Schema<TGuardian>({
     }
 });
 
-const AddressSchema = new Schema<TAddress>({
+export const AddressSchema = new Schema<TAddress>({
     permanentAddress: {
         city: { type: String, required: [true, 'Permanent City is required'], trim: true },
         road: { type: String, required: [true, 'Permanent Road No. is required'], trim: true },
@@ -69,10 +69,11 @@ const AddressSchema = new Schema<TAddress>({
     }
 });
 
-const BloodGroup: TBloodGroup[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+export const BloodGroup: TBloodGroup[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+export const Gender: TGender[] = ['female', 'male', 'others']; 
 
 //for custom instance // add parameter in student schema: TStudent, StudentModel, StudentExistsMethod
-// for custom static // add parameter in student schema : TStudent, StudentModel(must use interface)
+// for custom static // add parameter in student schema : TStudent, StudentModel(must use in interface(StudentModel))
 const studentSchema = new Schema<TStudent, StudentModel>({
     id: {
         type: String,
@@ -94,19 +95,21 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         type: String,
         required: [true, 'Student Email is required'],
         unique: true,
+        trim: true,
         message: 'Email already exist'
     },
-    phone: { type: String, required: [true, 'Student Phone No. is required'] },
+    phone: { type: String, required: [true, 'Student Phone No. is required'], trim: true },
     gender: {
         type: String,
         enum: {
-            values: ['male', 'female'],
+            values: Gender,
             message: '{VALUE} is not valid'
         },
         required: [true, 'Gender is required']
     },
-    age: { type: Number, required: [true, 'Age is required'] },
-    avatar: { type: String },
+    age: { type: Number, required: [true, 'Age is required'], trim: true },
+    dateOfBirth: { type: String, required: [true, 'Birth date is required']},
+    avatar: { type: String , trim: true},
     bloodGroup: {
         type: String,
         enum: {
@@ -133,7 +136,8 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         required: [true, 'Guardian details are required']
     },
     roll: {
-        type: Number
+        type: Number,
+        trim: true
     },
     section: {
         type: String,
@@ -141,10 +145,12 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     },
     admissionSemester: {
         type: Schema.Types.ObjectId,
+        required: [true, 'Academic Semester is required'],
         ref: 'AcademicSemester'
     },
     academicDepartment: {
         type: Schema.Types.ObjectId,
+        required: [true, 'Academic Department is required'],
         ref: 'AcademicDepartment'  // model name
     },
     isDeleted: {

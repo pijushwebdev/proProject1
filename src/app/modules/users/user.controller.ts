@@ -6,20 +6,33 @@ import asyncTryCatch from "../../utils/asyncTryCatch";
 
 const createStudent = asyncTryCatch( async (req, res) => {
 
-    const { password, students: studentData } = req.body;
+    const { password, student: studentData } = req.body;
 
-    const result = await userServices.createStudentIntoDB(password, studentData); 
+    const data = await userServices.createStudentIntoDB(password, studentData); 
 
     // this will force to maintain the format
     sendResponse(res,{
         statusCode: 201,
         success: true,
         message: "New Student is created",
-        data: result
+        data: data
     })
 
 })
 
+const createFaculty = asyncTryCatch( async (req, res) => {
+    const {password, facultyData} = req.body;
+    const data = await userServices.createFacultyIntoDB(password, facultyData);
+
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: 'Faculty is created',
+        data: data
+    })
+})
+
 export const usersController = {
-    createStudent
+    createStudent,
+    createFaculty,
 }

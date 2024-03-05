@@ -8,8 +8,7 @@ const userSchema = new Schema<TUser>({
     id: { type: String, required: [true, 'id is required'], unique: true },
     password: { 
         type: String, 
-        required: [true, 'Password is required'], 
-        minlength: [8, 'Minimum 8 character required'] 
+        minlength: [6, 'Minimum 6 character required']
     },
     needsPasswordChange: { type: Boolean, default: true },
     role: {
