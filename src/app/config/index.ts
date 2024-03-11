@@ -12,4 +12,5 @@ export default {
     student_password: process.env.STUDENT_PASSWORD,
     faculty_password: process.env.FACULTY_PASSWORD,
     admin_password: process.env.ADMIN_PASSWORD,
+    jwt_secret_key: process.env.JWT_SECRET_KEY,
 }

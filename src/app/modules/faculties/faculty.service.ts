@@ -39,23 +39,25 @@ const updateAFacultyFromDB = async (id: string, payload: Partial<TFaculty>) => {
         }
     }
 
-    return modifiedUpdatedData;
+    const result = await Faculty.findByIdAndUpdate(id, modifiedUpdatedData, {new: true, runValidators: true})
+    return result;
 }
 
-const deleteSingleFacultyFromDB = async ( userId: string ,facultyId: string) => {
+const deleteSingleFacultyFromDB = async ( facultyId: string ) => {
     
     const session = await mongoose.startSession();
     try{
         session.startTransaction();
 
-        const deletedUser = await User.findOneAndUpdate({_id: userId}, {isDeleted: true}, { new: true, session });
-        if(!deletedUser){
-            throw new AppError(400, 'Failed to delete the user');
-        }
-
-        const deletedFaculty = await Faculty.findByIdAndUpdate({_id: facultyId}, {isDeleted: true}, { new: true} );
+        const deletedFaculty = await Faculty.findByIdAndUpdate({_id: facultyId}, {isDeleted: true}, { new: true, session } );
         if(!deletedFaculty){
             throw new AppError(400, 'Failed to delete the faculty');
+        }
+
+        const userId = deletedFaculty.user;
+        const deletedUser = await User.findByIdAndUpdate(userId, {isDeleted: true}, {new: true, session} )
+        if(!deletedUser){
+            throw new AppError(400, 'Failed to delete user');
         }
 
         session.commitTransaction();

@@ -1,10 +1,11 @@
 import { Schema, model } from "mongoose";
-import { FacultyExistMethod, FacultyModel, TFaculty } from "./faculty.interface";
-import { AddressSchema, BloodGroup, Gender, NameSchema } from "../students/student.schema";
+import { FacultyModel, TFaculty } from "./faculty.interface";
+import { AddressSchema, NameSchema } from "../students/student.schema";
 import AppError from "../../ErrorHandlers/AppError";
+import { BloodGroup, Gender } from "../students/student.constant";
 
 
-const facultySchema = new Schema<TFaculty, FacultyModel, FacultyExistMethod>({
+const facultySchema = new Schema<TFaculty, FacultyModel>({
     id: {
         type: String,
         required: [true, 'id is required'],
@@ -36,8 +37,8 @@ const facultySchema = new Schema<TFaculty, FacultyModel, FacultyExistMethod>({
         required: [true, 'Address is required']
     },
     age: { type: Number, required: [true, 'Age is required'] },
-    dateOfBirth: { type: String, required: [true, 'Date of Birth is required'] },
-    phone: { type: String, required: [true, 'Phone number is required'] },
+    dateOfBirth: { type: String, required: [true, 'Date of Birth is required'], trim: true },
+    phone: { type: String, required: [true, 'Phone number is required'], trim: true },
     gender: {
         type: String,
         enum: {
@@ -54,8 +55,8 @@ const facultySchema = new Schema<TFaculty, FacultyModel, FacultyExistMethod>({
         },
 
     },
-    avatar: { type: String },
-    nationality: { type: String, required: [true, 'Nationality is required'] },
+    avatar: { type: String, trim: true },
+    nationality: { type: String, required: [true, 'Nationality is required'], trim: true },
     academicFaculty: {
         type: Schema.Types.ObjectId,
         required: [true, 'Academic Faculty id is required'],
@@ -67,13 +68,13 @@ const facultySchema = new Schema<TFaculty, FacultyModel, FacultyExistMethod>({
     }
 })
 
-facultySchema.methods.isFacultyExists = async (id: string) => {
-    const existFaculty = await Faculty.findById(id);
-    return existFaculty;
+facultySchema.statics.isFacultyExists = async (id: string) => {
+    const existingFaculty = await Faculty.findOne({id})
+    return existingFaculty;
 }
 
 facultySchema.pre('save', async function (next) {
-    const isExists = await Faculty.findById({ _id: this._id });
+    const isExists = await Faculty.findOne({ email: this.email });
     if(isExists){
         throw new AppError(400, 'Faculty already exists');
     }
@@ -94,7 +95,7 @@ facultySchema.pre('aggregate', function(next) {
 facultySchema.pre('findOneAndUpdate', async function(next) {
     const query = this.getQuery();
     const isExist = await Faculty.find(query);
-    if(isExist){
+    if(!isExist){
         throw new AppError(404, 'Faculty does not exists');
     }
     next();

@@ -9,13 +9,14 @@ const router = Router();
 
 router.get('/getAllFaculties', facultyControllers.getAllFaculty);
 
-router.get('/getFaculty/:facultyId', facultyControllers.getSingleFaculty);
+router.get('/getSingleFaculty/:facultyId', facultyControllers.getSingleFaculty);
 
 router.patch('/updateSingleFaculty/:facultyId', 
     requestValidation(facultyValidations.updateFacultyValidation),
     facultyControllers.updateAFaculty);
 
-router.delete('/deleteSingleFaculty/user/:userId/faculty/:facultyId', facultyControllers.deleteSingleFaculty);
+router.delete('/deleteSingleFaculty/faculty/:facultyId', 
+    facultyControllers.deleteSingleFaculty);
 
 
 export const facultyRoutes = router;

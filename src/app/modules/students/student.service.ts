@@ -42,12 +42,7 @@ const getAllStudentsDataFromDB = async () => {
 }
 
 const getSingleStudentFromDB = async (_id: string) => {
-    // const result = await Student.findById(id);
-    const isExist = await Student.isStudentExists(_id)
-    if (!isExist) {
-        throw new AppError(404, "Student does not exits");
-    }
-    const result = await Student.findOne({ _id });
+    const result = await Student.findById({ _id });
     return result;
 }
 
@@ -58,6 +53,13 @@ const getSingleStudentFromDBbyAggregate = async (_id: string) => {
 
 const updateAStudentFromDB = async (id: string, payload: Partial<TStudent>) => {
     const { name, guardian, address, ...restPrimitiveData } = payload;
+
+    if(restPrimitiveData.email){
+        throw new AppError(403, "Can't change email address");
+    }
+    if(restPrimitiveData.id){
+        throw new AppError(403, "Can't change id");
+    }
 
     const modifiedUpdatedData: Record<string, unknown> = { ...restPrimitiveData };
 
@@ -85,20 +87,26 @@ const updateAStudentFromDB = async (id: string, payload: Partial<TStudent>) => {
     return result;
 }
 
-const deleteSingleStudentFromDB = async (userId: string, studentId: string) => {
+const deleteSingleStudentFromDB = async (studentId: string) => {
 
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
 
-        const deletedUser = await User.findByIdAndUpdate({ _id: userId }, { isDeleted: true }, { new: true, session });
-        if (!deletedUser) {
-            throw new AppError(400, 'Failed to delete the user')
-        }
+        // const deletedUser = await User.findByIdAndUpdate({ _id: userId }, { isDeleted: true }, { new: true, session });
+        // if (!deletedUser) {
+        //     throw new AppError(400, 'Failed to delete the user')
+        // }
 
         const deletedStudent = await Student.findByIdAndUpdate({ _id: studentId }, { isDeleted: true }, { new: true, session });
         if (!deletedStudent) {
             throw new AppError(400, 'Failed to delete the student')
+        }
+
+        const userId = deletedStudent.user;
+        const deletedUser = await User.findByIdAndUpdate(userId, {isDeleted: true}, {new: true, session});
+        if(!deletedUser){
+            throw new AppError(400, 'Failed to delete user');
         }
 
         await session.commitTransaction();
@@ -110,7 +118,7 @@ const deleteSingleStudentFromDB = async (userId: string, studentId: string) => {
         throw new AppError(400, `${error}`);
     }
 
-    // //soft delete  // for this we need help of 'pre' middleware hook
+    // //soft delete  // for this we need help of 'pre' middleware hook for prevent find deleted data
     // const result = await Student.updateOne({ _id }, { isDeleted: true });
     // return result;
 }
@@ -170,6 +178,7 @@ const searchInStudentsFromDB = async (query: Record<string, unknown>) => {
     const searchableFields = ['email', 'name.firstName', 'address.presentAddress'];
 
     const studentQuery = new QueryBuilder(Student.find()
+        .populate('user')
         .populate('admissionSemester')
         .populate({
             path: 'academicDepartment',

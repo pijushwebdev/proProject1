@@ -16,7 +16,7 @@ const getAllFaculty = asyncTryCatch( async (req, res) => {
 })
 
 const getSingleFaculty = asyncTryCatch( async (req, res) => {
-    const id = req.params._id;
+    const id = req.params.facultyId;
     const data = await facultyServices.getSingleFacultyFromDB(id);
     
     sendResponse(res, {
@@ -28,7 +28,7 @@ const getSingleFaculty = asyncTryCatch( async (req, res) => {
 })
 
 const updateAFaculty = asyncTryCatch( async ( req, res) => {
-    const id = req.params._id;
+    const id = req.params.facultyId;
     const facultyData = req.body.faculty;
     const updatedData = await facultyServices.updateAFacultyFromDB(id, facultyData);
 
@@ -42,9 +42,9 @@ const updateAFaculty = asyncTryCatch( async ( req, res) => {
 
 const deleteSingleFaculty = asyncTryCatch( async (req, res) => {
     const facultyId = req.params.facultyId;
-    const userId = req.params.userId;
     
-    const deletedFaculty = await facultyServices.deleteSingleFacultyFromDB(userId, facultyId);
+    
+    const deletedFaculty = await facultyServices.deleteSingleFacultyFromDB(facultyId);
 
     sendResponse(res, {
         statusCode: 200,

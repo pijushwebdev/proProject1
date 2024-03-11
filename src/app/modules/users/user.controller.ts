@@ -21,7 +21,7 @@ const createStudent = asyncTryCatch( async (req, res) => {
 })
 
 const createFaculty = asyncTryCatch( async (req, res) => {
-    const {password, facultyData} = req.body;
+    const {password, faculty: facultyData} = req.body;
     const data = await userServices.createFacultyIntoDB(password, facultyData);
 
     sendResponse(res, {
@@ -32,7 +32,21 @@ const createFaculty = asyncTryCatch( async (req, res) => {
     })
 })
 
+const createAdmin = asyncTryCatch( async (req,res) => {
+    const {password, admin} = req.body;
+
+    const data = await userServices.createAdminIntoDB(password,admin);
+
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: 'Admin is successfully created',
+        data: data
+    })
+})
+
 export const usersController = {
     createStudent,
     createFaculty,
+    createAdmin
 }

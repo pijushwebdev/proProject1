@@ -46,7 +46,7 @@ const getSingleStudent = asyncTryCatch( async (req, res) => {
 // }
 const getSingleStudentByAggregate = asyncTryCatch( async (req, res) => {
     
-    const id  = req.params._id;
+    const id  = req.params.studentId;
     const data = await studentServices.getSingleStudentFromDBbyAggregate(id);
 
     res.status(200).json({
@@ -72,10 +72,9 @@ const updateAStudent = asyncTryCatch( async (req, res) => {
 
 const deleteSingleStudent = asyncTryCatch( async (req, res) => {
     
-    const userId = req.params.userId;
     const studentId = req.params.studentId;
 
-    const data = await studentServices.deleteSingleStudentFromDB(userId, studentId);
+    const data = await studentServices.deleteSingleStudentFromDB(studentId);
 
     res.status(200).json({
         success: true,
@@ -86,10 +85,7 @@ const deleteSingleStudent = asyncTryCatch( async (req, res) => {
 })
 
 const searchInStudents = asyncTryCatch (async (req, res) => {
-
-    
     const data = await studentServices.searchInStudentsFromDB(req.query);
-
     sendResponse(res, {
         statusCode: 200,
         message: 'Student data is retrieve',

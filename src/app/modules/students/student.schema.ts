@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
-import { StudentModel, TAddress, TGuardian, TStudent, TName, TBloodGroup, TGender } from "./student.interface";
+import { StudentModel, TAddress, TGuardian, TStudent, TName } from "./student.interface";
 import AppError from "../../ErrorHandlers/AppError";
+import { BloodGroup, Gender } from "./student.constant";
 // import bcrypt from 'bcrypt';
 // import config from "../../config";
 
@@ -69,8 +70,7 @@ export const AddressSchema = new Schema<TAddress>({
     }
 });
 
-export const BloodGroup: TBloodGroup[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-export const Gender: TGender[] = ['female', 'male', 'others']; 
+
 
 //for custom instance // add parameter in student schema: TStudent, StudentModel, StudentExistsMethod
 // for custom static // add parameter in student schema : TStudent, StudentModel(must use in interface(StudentModel))
@@ -198,7 +198,7 @@ studentSchema.pre('aggregate', function (next) {
 studentSchema.pre('save', async function (next) {
     const isExists = await Student.findOne({ email: this.email })
     if (isExists) {
-        throw new AppError(404,'Student is already exists');
+        throw new AppError(404,'Student email is already exists');
     }
     next();
 })
@@ -206,25 +206,23 @@ studentSchema.pre('save', async function (next) {
 studentSchema.pre('findOneAndUpdate', async function (next) {
     const query = this.getQuery();
     const isExist = await Student.findOne(query);
-
     if (!isExist) {
         throw new AppError(404,"This student does not exists")
     }
-
     next();
 })
 
 
 studentSchema.statics.isStudentExists = async function (id: string) {
-    const existStudent = await Student.findById(id);
+    const existStudent = await Student.findOne({id});
     return existStudent;
 }
 
 //custom static method
-studentSchema.statics.isUserExists = async function (email: string) {
-    const existUser = await Student.findOne({ email });
-    return existUser;
-}
+// studentSchema.statics.isUserExists = async function (email: string) {
+//     const existUser = await Student.findOne({ email });
+//     return existUser;
+// }
 
 
 // custom instance method

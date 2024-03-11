@@ -1,4 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
+import { BloodGroup, Gender } from '../students/student.constant';
 
 const NameValidation = z.object({
     firstName: z.string().max(20).trim().refine(value => /^[A-Z]/.test(value), {
@@ -21,26 +22,23 @@ const AddressValidation = z.object({
     })
 })
 
-const createFacultyValidation = z.object({
+const createAdminValidation = z.object({
     body: z.object({
-        password: z.string().min(6).refine((value) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/.test(value), {
+        password: z.string().min(6).refine((value) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/.test(value),{
             message: 'Password must have a upper case,lower case and special character'
         }).optional(),
 
-
-        faculty: z.object({
+        admin: z.object({
             name: NameValidation,
             email: z.string().trim(),
             designation: z.string().trim(),
+            age: z.number(),
+            dateOfBirth: z.string().trim(),
+            gender: z.enum([...Gender] as [string, ...string[]]),
+            bloodGroup: z.enum([...BloodGroup as [string, ...string[]]]),
             address: AddressValidation,
             phone: z.string().trim(),
-            avatar: z.string().trim().optional(),
-            bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]).optional(),
-            age: z.number().int(),
-            dateOfBirth: z.string().trim(),
-            gender: z.enum(["male", "female"]),
-            nationality: z.string().min(1),
-            academicFaculty: z.string().trim()
+            nationality: z.string().trim()
         })
     })
 })
@@ -65,29 +63,28 @@ const UpdateAddressValidation = z.object({
         zip_code: z.string().trim().optional()
     })
 })
-const updateFacultyValidation = z.object({
+const updateAdminValidation = z.object({
     body: z.object({
-        password: z.string().min(6).refine((value) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/.test(value), {
+        password: z.string().min(6).refine((value) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/.test(value),{
             message: 'Password must have a upper case,lower case and special character'
         }).optional(),
-    }),
-    faculty: z.object({
-        name: UpdateNameValidation.optional(),
-        email: z.string().trim().optional(),
-        designation: z.string().trim().optional(),
-        address: UpdateAddressValidation.optional(),
-        phone: z.string().trim().optional(),
-        avatar: z.string().trim().optional(),
-        bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]).optional(),
-        age: z.number().int().optional(),
-        dateOfBirth: z.string().trim().optional(),
-        gender: z.enum(["male", "female"]).optional(),
-        nationality: z.string().min(1).optional(),
-        academicFaculty: z.string().trim().optional()
+
+        admin: z.object({
+            name: UpdateNameValidation.optional(),
+            email: z.string().trim().optional(),
+            designation: z.string().trim().optional(),
+            age: z.number().optional(),
+            dateOfBirth: z.string().trim().optional(),
+            gender: z.enum([...Gender] as [string, ...string[]]).optional(),
+            bloodGroup: z.enum([...BloodGroup as [string, ...string[]]]).optional(),
+            address: UpdateAddressValidation.optional(),
+            phone: z.string().trim().optional(),
+            nationality: z.string().trim().optional()
+        })
     })
 })
 
-export const facultyValidations = {
-    createFacultyValidation,
-    updateFacultyValidation,
+export const adminValidations = {
+    createAdminValidation,
+    updateAdminValidation
 }

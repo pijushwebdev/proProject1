@@ -19,7 +19,7 @@ export type TFaculty = {
     isDeleted: boolean;
 }
 
-export type FacultyExistMethod = {
+export interface FacultyModel extends Model<TFaculty> {
     isFacultyExists(id: string): Promise<TFaculty | null>
 }
-export type FacultyModel = Model<TFaculty, Record<string, unknown>, FacultyExistMethod>;
+// export type FacultyModel = Model<TFaculty, Record<string, unknown>, FacultyExistMethod>;
