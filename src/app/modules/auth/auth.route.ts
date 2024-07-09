@@ -8,12 +8,17 @@ import { USER_ROLE } from "../users/user.constant";
 const router = Router();
 
 
-router.post('/login', 
+router.post('/login',
     requestValidation(authValidations.loginAuthValidation),
     authControllers.loginUser
 );
 
-router.post('/change-password', 
+router.post('/refresh-token',
+    requestValidation(authValidations.refreshTokenValidation),
+    authControllers.refreshToken
+);
+
+router.post('/change-password',
     Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
     requestValidation(authValidations.changePasswordAuthValidation),
     authControllers.changePassword

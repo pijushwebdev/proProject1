@@ -6,6 +6,15 @@ const loginAuthValidation = z.object({
         password: z.string({required_error: 'Password is required'}).trim()
     })
 }) 
+const refreshTokenValidation = z.object({
+    cookies: z.object({
+      refreshToken: z.string({
+        required_error: 'Refresh token is required!',
+      }),
+    }),
+  });
+
+
 const changePasswordAuthValidation = z.object({
     body: z.object({
         oldPassword: z.string({ required_error: 'Old password is required'}).trim(),
@@ -16,4 +25,5 @@ const changePasswordAuthValidation = z.object({
 export const authValidations = {
     loginAuthValidation,
     changePasswordAuthValidation,
+    refreshTokenValidation,
 }

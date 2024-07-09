@@ -9,14 +9,14 @@ import AppError from "../../ErrorHandlers/AppError"
 
 const getAllAdminFromDB = async (query: Record<string, unknown>) => {
     const searchableFields = ['email', 'designation', 'address.presentAddress']
-    const facultyQuery = new QueryBuilder(Admin.find(), query)
+    const adminQuery = new QueryBuilder(Admin.find(), query)
         .search(searchableFields)
         .filter()
         .sort()
         .paginate()
         .fieldLimit()
 
-    const result = facultyQuery.modelQuery;
+    const result = adminQuery.modelQuery;
     return result;
 }
 

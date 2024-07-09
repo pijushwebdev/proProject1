@@ -5,7 +5,6 @@ import { TErrorSource, TGenericErrorResponse } from "../interface/errors";
 
 const handleCastError = (error: mongoose.Error.CastError): TGenericErrorResponse => {
     const statusCode = 400;
-
     const errorSource: TErrorSource = [{
         path: error?.path,
         message: error?.message

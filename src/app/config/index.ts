@@ -13,4 +13,7 @@ export default {
     faculty_password: process.env.FACULTY_PASSWORD,
     admin_password: process.env.ADMIN_PASSWORD,
     jwt_secret_key: process.env.JWT_SECRET_KEY,
+    jwt_refresh_key: process.env.JWT_REFRESH_KEY,
+    jwt_secret_expires_in: process.env.JWT_SECRET_EXPIRES_IN,
+    jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN
 }

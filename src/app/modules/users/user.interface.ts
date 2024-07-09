@@ -16,6 +16,7 @@ export type TUser = {
 export interface UserModel extends Model<TUser>{
     isUserExists(id: string): Promise<TUser | null>;
     isPasswordMatched(password: string, hashPassword: string): Promise<boolean>;
+    isJwtExpiredForChangePassword(passwordChangeTime: Date, tokenIssueTime: number): boolean;
 }
 
 // export type NewUser = {

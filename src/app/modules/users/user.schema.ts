@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import { TUser, UserModel } from "./user.interface";
 import bcrypt from 'bcrypt';
 import config from "../../config";
+import AppError from "../../ErrorHandlers/AppError";
 
 
 const userSchema = new Schema<TUser, UserModel>({
@@ -44,6 +45,14 @@ userSchema.post('save', async function (doc, next) {
     next();
 })
 
+userSchema.pre('save', async function (next) {
+    const isExists = await User.findOne({ email: this.email })
+    if (isExists) {
+        throw new AppError(404,'User email is already exists');
+    }
+    next();
+})
+
 userSchema.statics.isUserExists = async function (id: string) {
     const user = await User.findOne({ id }).select('+password');  //id -> custom generated id
     return user;
@@ -51,6 +60,11 @@ userSchema.statics.isUserExists = async function (id: string) {
 userSchema.statics.isPasswordMatched = async function (password, hashPassword) {
     const isMatched = await bcrypt.compare(password, hashPassword);
     return isMatched;
+}
+userSchema.statics.isJwtExpiredForChangePassword = async function (passwordChangeTime: Date, tokenIssueTime: number){
+    const changedTime = new Date(passwordChangeTime).getTime() / 1000; //convert to second
+    
+    return changedTime > tokenIssueTime;
 }
 
 export const User = model<TUser, UserModel>('User', userSchema);

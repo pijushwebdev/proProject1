@@ -4,7 +4,12 @@ import asyncTryCatch from "../utils/asyncTryCatch";
 const requestValidation = (schema: AnyZodObject) => {
     return asyncTryCatch( async (req, res, next) => {
 
-        await schema.parseAsync({ body: req.body })
+        await schema.parseAsync(
+            { 
+                body: req.body,
+                cookies: req.cookies,
+            }
+        )
         next();
     })
 }
