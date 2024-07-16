@@ -50,6 +50,7 @@ export type TStudent = {
     section?: string;
     admissionSemester: Types.ObjectId;
     academicDepartment: Types.ObjectId;
+    academicFaculty: Types.ObjectId;
     isDeleted: boolean;
 }
 

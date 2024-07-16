@@ -146,16 +146,17 @@ const deleteSingleStudentFromDB = async (studentId: string) => {
 //             path: 'academicFaculty'
 //         }
 //     });
+//     //sorting
 //     let sort = '-createdAt';
 //     if (query?.sort) {
 //         sort = query?.sort as string;
 //     }
 //     const sortQuery = filterQuery.sort(sort);
+//     //pagination
 //     let limit = 1;
 //     if (query.limit) {
 //         limit = Number(query.limit);
 //     }
-//     //pagination
 //     let skip = 0;
 //     let page = 1;
 //     if (query?.page) {
@@ -163,7 +164,7 @@ const deleteSingleStudentFromDB = async (studentId: string) => {
 //         skip = Number(page - 1) * limit;
 //     }
 //     const paginateQuery = sortQuery.skip(skip);
-//     // paginate = sortQuery.skip(skip).limit(limit);
+//    // paginate = sortQuery.skip(skip).limit(limit);
 //     const limitQuery = paginateQuery.limit(limit);
 //     // field limiting
 //     let fields = '-__v';
@@ -183,12 +184,12 @@ const searchInStudentsFromDB = async (query: Record<string, unknown>) => {
         .populate({
             path: 'academicDepartment',
             populate: { path: 'academicFaculty' }
-        }), query)
+        }), query )
         .search(searchableFields)
         .filter()
         .sort()
         .paginate()
-        .fieldLimit()
+        .fields()
 
     const result = studentQuery.modelQuery;
 

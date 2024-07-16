@@ -10,8 +10,6 @@ import handleDuplicateError from "./handleDuplicateError";
 
 
 
-
-
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     if (error) {
         let statusCode = 500;

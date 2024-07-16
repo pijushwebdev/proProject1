@@ -88,7 +88,7 @@ const searchInStudents = asyncTryCatch (async (req, res) => {
     const data = await studentServices.searchInStudentsFromDB(req.query);
     sendResponse(res, {
         statusCode: 200,
-        message: 'Student data is retrieve',
+        message: 'Student data is retrieved',
         success: true,
         data: data
     })
