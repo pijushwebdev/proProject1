@@ -77,7 +77,7 @@ const refreshToken = asyncTryCatch(async (req, res) => {
 ) 
   const resetPassword = asyncTryCatch(async (req, res) => {
 
-    const result = await authServices.resetPassword()
+    const result = await authServices.resetPassword(req.body)
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

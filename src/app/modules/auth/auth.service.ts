@@ -173,8 +173,8 @@ const forgetPassword = async (userId: string) => {
     sendMail(userInfo.email,resetPasswordLink)
 }
 
-const resetPassword = async () => {
-
+const resetPassword = async (payload: Record<string, string>) => {
+    console.log(payload);
 }
 
 export const authServices = {
