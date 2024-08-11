@@ -6,7 +6,7 @@ import { User } from "../modules/users/user.schema";
 import asyncTryCatch from "../utils/asyncTryCatch";
 import { JwtPayload } from 'jsonwebtoken';
 
-
+// Auth('admin')
 const Auth = (...requiredRoles: TUser_Role[]) => {
 
     return asyncTryCatch(async (req, res, next) => {
@@ -39,6 +39,7 @@ const Auth = (...requiredRoles: TUser_Role[]) => {
 
         if(userInfo.passwordChangeAt && 
             User.isJwtExpiredForChangePassword(userInfo.passwordChangeAt, iat as number)){
+                
                 throw new AppError(403, 'Forbidden access');
         }
 

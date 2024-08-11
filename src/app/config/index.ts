@@ -16,5 +16,6 @@ export default {
     jwt_refresh_key: process.env.JWT_REFRESH_KEY,
     jwt_secret_expires_in: process.env.JWT_SECRET_EXPIRES_IN,
     jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
-    super_admin_password: process.env.super_admin_password
+    super_admin_password: process.env.super_admin_password,
+    reset_pass_link: process.env.RESET_PASS_LINK,
 }

@@ -22,8 +22,23 @@ const changePasswordAuthValidation = z.object({
     })
 }) 
 
+const forgetPasswordValidation = z.object({
+  body: z.object({
+    id: z.string({required_error: 'Id is required'}).trim()
+  })
+})
+
+const resetPasswordValidation = z.object({
+  body: z.object({
+    id: z.string({required_error: 'Id is required'}).trim(),
+    newPassword: z.string({required_error: 'New Password required'}).trim()
+  })
+})
+
 export const authValidations = {
     loginAuthValidation,
     changePasswordAuthValidation,
     refreshTokenValidation,
+    forgetPasswordValidation,
+    resetPasswordValidation
 }

@@ -5,10 +5,11 @@ import { TJwtPayload, TLoginUser } from "./auth.interface";
 import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 import { createToken, verifyToken } from "./auth.utils";
+import sendMail from "../../utils/sendEmail";
 
 const loginUser = async (payload: TLoginUser) => {
     // const userInfo = await User.findOne({id: payload?.id});
-    const userInfo = await User.isUserExists(payload.id);
+    const userInfo = await User.isUserExists(payload.id!);
     if (!userInfo) {
         throw new AppError(404, 'User not found');
     }
@@ -138,8 +139,48 @@ const refreshToken = async (refreshToken: string) => {
     };
 }
 
+const forgetPassword = async (userId: string) => {
+    const userInfo = await User.isUserExists(userId);
+    if (!userInfo) {
+        throw new AppError(404, 'User not found');
+    }
+
+    const isDeleted = userInfo?.isDeleted;
+    if (isDeleted) {
+        throw new AppError(403, 'This user is deleted');
+    }
+
+    const status = userInfo?.status;
+    if (status === 'blocked') {
+        throw new AppError(403, 'Your account is blocked')
+    }
+
+    const jwtPayload: TJwtPayload = {
+        userId: userInfo?.id,
+        role: userInfo?.role,
+        email: userInfo?.email
+    }
+
+    const resetToken = createToken(
+        jwtPayload,
+        config.jwt_secret_key as string,
+        '10m',
+    );
+
+    const resetPasswordLink = `${config.reset_pass_link}.?id=${userInfo.id}&token=${resetToken}`
+    console.log(resetPasswordLink);
+
+    sendMail(userInfo.email,resetPasswordLink)
+}
+
+const resetPassword = async () => {
+
+}
+
 export const authServices = {
     loginUser,
     changePassword,
     refreshToken,
+    forgetPassword,
+    resetPassword
 }

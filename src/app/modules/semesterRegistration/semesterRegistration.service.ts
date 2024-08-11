@@ -34,7 +34,7 @@ const createSemesterRegistrationIntoDB = async (
   if (isThereAnyUpcomingOrOngoingSEmester) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      `There is aready an ${isThereAnyUpcomingOrOngoingSEmester.status} registered semester !`,
+      `There is already an ${isThereAnyUpcomingOrOngoingSEmester.status} registered semester !`,
     );
   }
   // check if the semester is exist
@@ -158,7 +158,7 @@ const updateSemesterRegistrationIntoDB = async (
 const deleteSemesterRegistrationFromDB = async (id: string) => {
   /** 
   * Step1: Delete associated offered courses.
-  * Step2: Delete semester registraton when the status is 
+  * Step2: Delete semester registration when the status is 
   'UPCOMING'.
   **/
 
@@ -205,13 +205,13 @@ const deleteSemesterRegistrationFromDB = async (id: string) => {
       );
     }
 
-    const deletedSemisterRegistration =
+    const deletedSemesterRegistration =
       await SemesterRegistration.findByIdAndDelete(id, {
         session,
         new: true,
       });
 
-    if (!deletedSemisterRegistration) {
+    if (!deletedSemesterRegistration) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
         'Failed to delete semester registration !',

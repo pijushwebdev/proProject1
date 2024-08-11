@@ -17,10 +17,10 @@ export const generatedStudentId = async (payload: TAcademicSemester) => {
         lastAdmittedStudentCode === payload.code) {
         currentId = lastAdmittedStudentId.substring(6);
     }
-
+ 
     let incrementedId = (Number(currentId) + 1).toString().padStart(4, '0');
 
-    incrementedId = `${payload.year}${payload.code}${incrementedId}`// year+yearCode+4digit code
+    incrementedId = `${payload.year}${payload.code}${incrementedId}`// year+semesterCode+4digit code
 
     return incrementedId;
 }

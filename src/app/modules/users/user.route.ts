@@ -14,16 +14,18 @@ const router = express.Router();
 
 
 router.post('/create-student',
-    Auth(USER_ROLE.admin),
+    Auth(USER_ROLE.admin, USER_ROLE.superAdmin),
     requestValidation(studentValidations.createStudentZodSchema),   //zod validation middleware
     usersController.createStudent
 );
 router.post('/create-faculty', 
+    Auth(USER_ROLE.admin),
     requestValidation(facultyValidations.createFacultyValidation),
     usersController.createFaculty
 )
 
 router.post('/create-admin', 
+    Auth(USER_ROLE.superAdmin),
     requestValidation(adminValidations.createAdminValidation),
     usersController.createAdmin
 );

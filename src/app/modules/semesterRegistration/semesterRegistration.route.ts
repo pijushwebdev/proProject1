@@ -31,7 +31,7 @@ router.patch(
   '/:id',
   Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   requestValidation(
-    SemesterRegistrationValidations.upadateSemesterRegistrationValidationSchema,
+    SemesterRegistrationValidations.updateSemesterRegistrationValidationSchema,
   ),
   SemesterRegistrationController.updateSemesterRegistration,
 );

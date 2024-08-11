@@ -54,14 +54,14 @@ userSchema.pre('save', async function (next) {
 })
 
 userSchema.statics.isUserExists = async function (id: string) {
-    const user = await User.findOne({ id }).select('+password');  //id -> custom generated id
+    const user = await User.findOne({ id }).select('+password');   //id -> custom generated id /--/ select('+password) ==> password soho data
     return user;
 }
 userSchema.statics.isPasswordMatched = async function (password, hashPassword) {
     const isMatched = await bcrypt.compare(password, hashPassword);
     return isMatched;
 }
-userSchema.statics.isJwtExpiredForChangePassword = async function (passwordChangeTime: Date, tokenIssueTime: number){
+userSchema.statics.isJwtExpiredForChangePassword = function (passwordChangeTime: Date, tokenIssueTime: number){
     const changedTime = new Date(passwordChangeTime).getTime() / 1000; //convert to second
     
     return changedTime > tokenIssueTime;

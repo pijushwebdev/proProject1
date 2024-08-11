@@ -14,7 +14,7 @@ const getAllAdminFromDB = async (query: Record<string, unknown>) => {
         .filter()
         .sort()
         .paginate()
-        .fieldLimit()
+        .fields()
 
     const result = adminQuery.modelQuery;
     return result;

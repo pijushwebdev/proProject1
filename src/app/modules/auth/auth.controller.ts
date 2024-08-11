@@ -1,3 +1,4 @@
+import httpStatus from "http-status";
 import config from "../../config";
 import asyncTryCatch from "../../utils/asyncTryCatch";
 import sendResponse from "../../utils/sendResponse";
@@ -6,7 +7,9 @@ import { authServices } from "./auth.service";
 
 const loginUser = asyncTryCatch(async (req, res) => {
     const userInfo = req.body;
+    
     const data = await authServices.loginUser(userInfo);
+
     const { refreshToken, accessToken, needsPasswordChange } = data;
 
     res.cookie('refreshToken', refreshToken, {
@@ -34,7 +37,7 @@ const loginUser = asyncTryCatch(async (req, res) => {
 
 const changePassword = asyncTryCatch(async (req, res) => {
 
-    // console.log(req.user, req.body);
+    console.log(req.user, req.body);    // ===> Auth() =>token decode--> user ... req.user
     const user = req.user;
     const { ...password } = req.body;
     const data = await authServices.changePassword(user, password);
@@ -49,6 +52,7 @@ const changePassword = asyncTryCatch(async (req, res) => {
 
 const refreshToken = asyncTryCatch(async (req, res) => {
     const { refreshToken } = req.cookies;
+    console.log(req.cookies);
     const result = await authServices.refreshToken(refreshToken);
   
     sendResponse(res, {
@@ -59,8 +63,36 @@ const refreshToken = asyncTryCatch(async (req, res) => {
     });
   });
 
+  const forgetPassword = asyncTryCatch(async (req, res) => {
+
+    const result = await authServices.forgetPassword(req.body.id)
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Reset link is generated successfully',
+        data: result
+    })
+  }
+) 
+  const resetPassword = asyncTryCatch(async (req, res) => {
+
+    const result = await authServices.resetPassword()
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Password reset successfully',
+        data: result
+    })
+  }
+) 
+  
+
 export const authControllers = {
     loginUser,
     changePassword,
     refreshToken,
+    forgetPassword,
+    resetPassword
 }

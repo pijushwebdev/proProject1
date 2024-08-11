@@ -49,7 +49,8 @@ const createStudentZodSchema = z.object({
             roll: z.number().int().optional(),
             section: z.string().min(1).optional(),
             admissionSemester: z.string().trim(),
-            academicDepartment: z.string().trim()
+            academicDepartment: z.string().trim(),
+            academicFaculty: z.string().trim()
         })
     })
 });
@@ -104,7 +105,8 @@ const updateStudentZodSchema = z.object({
             roll: z.number().int().optional(),
             section: z.string().min(1).optional(),
             admissionSemester: z.string().optional(),
-            academicDepartment: z.string().optional()
+            academicDepartment: z.string().optional(),
+            academicFaculty: z.string().trim().optional(),
         })
     })
 });

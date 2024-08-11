@@ -207,9 +207,10 @@ studentSchema.pre('save', async function (next) {
     }
     next();
 })
-
+// -->
 studentSchema.pre('findOneAndUpdate', async function (next) {
     const query = this.getQuery();
+    // console.log('query ====> ',query);   // --> {_id: "........."}
     const isExist = await Student.findOne(query);
     if (!isExist) {
         throw new AppError(404,"This student does not exists")

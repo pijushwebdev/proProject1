@@ -32,12 +32,15 @@ import QueryBuilder from "../../builders/QueryBuilder";
 // }
 
 const getAllStudentsDataFromDB = async () => {
-    const result = await Student.find().populate('admissionSemester').populate({
-        path: 'academicDepartment',
-        populate: {
-            path: 'academicFaculty' // field name
-        }
-    });
+    const result = await Student.find()
+        .populate('user')
+        .populate('admissionSemester')
+        .populate({
+            path: 'academicDepartment',
+            populate: {
+                path: 'academicFaculty' // field name
+            }
+        });
     return result;
 }
 
@@ -54,10 +57,10 @@ const getSingleStudentFromDBbyAggregate = async (_id: string) => {
 const updateAStudentFromDB = async (id: string, payload: Partial<TStudent>) => {
     const { name, guardian, address, ...restPrimitiveData } = payload;
 
-    if(restPrimitiveData.email){
+    if (restPrimitiveData.email) {
         throw new AppError(403, "Can't change email address");
     }
-    if(restPrimitiveData.id){
+    if (restPrimitiveData.id) {
         throw new AppError(403, "Can't change id");
     }
 
@@ -104,8 +107,8 @@ const deleteSingleStudentFromDB = async (studentId: string) => {
         }
 
         const userId = deletedStudent.user;
-        const deletedUser = await User.findByIdAndUpdate(userId, {isDeleted: true}, {new: true, session});
-        if(!deletedUser){
+        const deletedUser = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, session });
+        if (!deletedUser) {
             throw new AppError(400, 'Failed to delete user');
         }
 
@@ -184,7 +187,7 @@ const searchInStudentsFromDB = async (query: Record<string, unknown>) => {
         .populate({
             path: 'academicDepartment',
             populate: { path: 'academicFaculty' }
-        }), query )
+        }), query)
         .search(searchableFields)
         .filter()
         .sort()
