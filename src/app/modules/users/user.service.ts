@@ -14,24 +14,22 @@ import { TAdmin } from "../admin/admin.interface";
 import { Admin } from "../admin/admin.schema";
 
 
-
-
 const createStudentIntoDB = async (password: string, payload: TStudent) => {  //payload ---> studentData
 
     const userData: Partial<TUser> = {};
 
     // if password not given, use default password
-    if(password && password.length > 0){
+    if (password && password.length > 0) {
         userData.password = password;
         userData.needsPasswordChange = false;
-    }else{
+    } else {
         userData.password = config.student_password as string
     }
     userData.role = "student";
     userData.email = payload.email;
 
     const semesterInfo = await AcademicSemester.findById(payload.admissionSemester) as TAcademicSemester;
-    if(!semesterInfo){
+    if (!semesterInfo) {
         throw new AppError(404, 'Admission semester not found');
     }
     //generate user id 
@@ -53,13 +51,13 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {  //
 
         // we can handle it using instance, static method in schema and also like this: here, i use static
         const existingStudent = await Student.isStudentExists(payload.id);
-        if(existingStudent){
+        if (existingStudent) {
             throw new AppError(400, "Student already exist");
         }
 
-        const newStudent = await Student.create([payload], {session});
+        const newStudent = await Student.create([payload], { session });
 
-        if(!newStudent.length){
+        if (!newStudent.length) {
             throw new AppError(400, 'Failed to create student')
         }
 
@@ -82,38 +80,41 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     userData.role = 'faculty';
     userData.id = await generateFacultyId();
     userData.email = payload.email;
-    
+
     const session = await mongoose.startSession();
-    try{
+    try {
         session.startTransaction();
 
-        const newUser = await User.create([userData], {session});
-        if(!newUser){
+        const newUser = await User.create([userData], { session });
+        if (!newUser) {
             throw new AppError(400, 'Failed to create new user');
         }
-        
+
         payload.id = newUser[0].id;
         payload.user = newUser[0]._id;
 
-        // const existingFaculty = await Faculty.isFacultyExists()
+        const existingFaculty = await Faculty.isFacultyExists(payload.id);
+        if (existingFaculty) {
+            throw new AppError(400, "Faculty already exist");
+        }
 
-        const newFaculty = await Faculty.create([payload], {session});
-        if(!newFaculty){
-            throw new AppError(400,'Failed to create new faculty');
+        const newFaculty = await Faculty.create([payload], { session });
+        if (!newFaculty) {
+            throw new AppError(400, 'Failed to create new faculty');
         }
         session.commitTransaction();
         session.endSession();
 
         return newFaculty;
 
-    }catch(error){
+    } catch (error) {
         session.abortTransaction();
         session.endSession();
         throw new AppError(400, `${error}`);
     }
 }
 
-const createAdminIntoDB = async (password: string ,payload: TAdmin) => {
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     const userData: Partial<TUser> = {};
 
     userData.password = password || config.admin_password;
@@ -122,36 +123,74 @@ const createAdminIntoDB = async (password: string ,payload: TAdmin) => {
     userData.id = await generateAdminId();
 
     const session = await mongoose.startSession();
-    try{
+    try {
         session.startTransaction();
 
-        const newUser = await User.create([userData], {session});
-        if(!newUser){
+        const newUser = await User.create([userData], { session });
+        if (!newUser) {
             throw new AppError(400, 'Failed to create new user')
         }
 
         payload.id = newUser[0].id;
         payload.user = newUser[0]._id;
 
-        const newAdmin = await Admin.create([payload], {session});
-        if(!newAdmin){
+        const existingAdmin = await Admin.isAdminExists(payload.id);
+        if (existingAdmin) {
+            throw new AppError(400, "Admin already exist");
+        }
+
+        const newAdmin = await Admin.create([payload], { session });
+        if (!newAdmin) {
             throw new AppError(400, 'Failed to create admin');
         }
 
         session.commitTransaction();
         session.endSession();
-        
+
         return newAdmin;
 
-    }catch(error){
+    } catch (error) {
         session.abortTransaction();
         session.endSession();
         throw new AppError(400, 'Failed to create Admin');
     }
 }
 
+const changeStatus = async (id: string, payload: {status: string}) => {
+    const {status} = payload;
+
+    const result = await User.findOneAndUpdate({_id:id}, { status },
+        {
+            new: true
+        }
+    )
+    return result;
+}
+
+const myProfile = async (userId: string, role: string) => {
+    
+
+    let result = null;
+
+    if( role === 'student' ){
+        result = await Student.findOne({id: userId})
+    }
+
+    if( role === 'admin' ){
+        result = await Admin.findOne({id: userId})
+    }
+
+    if( role === 'faculty' ){
+        result = await Faculty.findOne({id: userId})
+    }
+
+    return result;
+}
+
 export const userServices = {
     createStudentIntoDB,
     createFacultyIntoDB,
     createAdminIntoDB,
+    changeStatus,
+    myProfile,
 }

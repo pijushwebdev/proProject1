@@ -6,6 +6,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 import { createToken, verifyToken } from "./auth.utils";
 import sendMail from "../../utils/sendEmail";
+import httpStatus from "http-status";
 
 const loginUser = async (payload: TLoginUser) => {
     // const userInfo = await User.findOne({id: payload?.id});
@@ -47,8 +48,7 @@ const loginUser = async (payload: TLoginUser) => {
         config.jwt_refresh_key as string,
         config.jwt_refresh_expires_in as string
     );
-
-
+    
     return {
         accessToken,
         refreshToken,
@@ -168,13 +168,44 @@ const forgetPassword = async (userId: string) => {
     );
 
     const resetPasswordLink = `${config.reset_pass_link}.?id=${userInfo.id}&token=${resetToken}`
-    console.log(resetPasswordLink);
-
+    // console.log(resetPasswordLink);
     sendMail(userInfo.email,resetPasswordLink)
 }
 
-const resetPassword = async (payload: Record<string, string>) => {
-    console.log(payload);
+const resetPassword = async (payload: {id: string, newPassword: string}, token: string) => {
+    const { id, newPassword } = payload;
+
+    const userInfo = await User.isUserExists(id);
+
+    if(!userInfo){
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    if(userInfo?.isDeleted){
+        throw new AppError(httpStatus.BAD_REQUEST, 'User is deleted');
+    }
+    if(userInfo?.status === 'blocked'){
+        throw new AppError(httpStatus.BAD_REQUEST, 'User is blocked');
+    }
+
+    const decoded = verifyToken(token, config.jwt_secret_key as string);
+
+    const { userId, role } = decoded;
+
+    if(userId !== id){
+        throw new AppError(httpStatus.FORBIDDEN, 'Unauthorized access')
+    }
+
+    const newHashedPassword = await bcrypt.hash(newPassword, Number(config.bcrypt_salt_round));
+
+    await User.findOneAndUpdate(
+        {id: userId, role: role}, 
+        {
+            password: newHashedPassword,
+            needsPasswordChange: false,
+            passwordChangeAt: new Date()
+        });
+    
 }
 
 export const authServices = {

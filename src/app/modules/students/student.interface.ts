@@ -66,7 +66,7 @@ export type TStudent = {
 //     isUserExists(email: string) : Promise<TStudent | null>; 
 // }
 
-// export type StudentModel =Model<TStudent, Record<string, never>, StudentExistsMethod>;
+// export type StudentModel = Model<TStudent, Record<string, never>, StudentExistsMethod>;
 
 //custom instance method end
 

@@ -30,7 +30,7 @@ router.post('/forget-password',
 )
 
 router.post('/reset-password', 
-    requestValidation(authValidations.forgetPasswordValidation),
+    requestValidation(authValidations.resetPasswordValidation),
     authControllers.resetPassword
 )
 

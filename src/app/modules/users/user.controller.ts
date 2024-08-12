@@ -2,7 +2,7 @@
 import { userServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import asyncTryCatch from "../../utils/asyncTryCatch";
-// import UserZodSchema from "./user.validation";
+import httpStatus from "http-status";
 
 const createStudent = asyncTryCatch( async (req, res) => {
 
@@ -45,8 +45,32 @@ const createAdmin = asyncTryCatch( async (req,res) => {
     })
 })
 
+const changeStatus = asyncTryCatch( async (req, res) => {
+    const id = req.params.id;
+    const result = await userServices.changeStatus(id, req.body);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User status successfully changed',
+        data: result,
+    })
+})
+
+const myProfile = asyncTryCatch( async (req, res) => {
+    const { userId, role } = req.user;
+    const result = await userServices.myProfile(userId, role);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'My profile info retrieve successfully',
+        data: result,
+    })
+})
 export const usersController = {
     createStudent,
     createFaculty,
-    createAdmin
+    createAdmin,
+    changeStatus,
+    myProfile,
 }

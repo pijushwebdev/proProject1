@@ -3,6 +3,7 @@ import config from "../../config";
 import asyncTryCatch from "../../utils/asyncTryCatch";
 import sendResponse from "../../utils/sendResponse";
 import { authServices } from "./auth.service";
+import AppError from "../../ErrorHandlers/AppError";
 
 
 const loginUser = asyncTryCatch(async (req, res) => {
@@ -37,7 +38,7 @@ const loginUser = asyncTryCatch(async (req, res) => {
 
 const changePassword = asyncTryCatch(async (req, res) => {
 
-    console.log(req.user, req.body);    // ===> Auth() =>token decode--> user ... req.user
+    // console.log(req.user, req.body);    // ===> Auth() =>token decode--> user ... req.user
     const user = req.user;
     const { ...password } = req.body;
     const data = await authServices.changePassword(user, password);
@@ -77,14 +78,19 @@ const refreshToken = asyncTryCatch(async (req, res) => {
 ) 
   const resetPassword = asyncTryCatch(async (req, res) => {
 
-    const result = await authServices.resetPassword(req.body)
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: 'Password reset successfully',
-        data: result
-    })
+    const body = req.body;
+    const token = req.headers.authorization;
+    if(token){
+        const result = await authServices.resetPassword(body, token)    
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: 'Password reset successfully',
+            data: result
+        })
+    }else{
+        throw new AppError(httpStatus.FORBIDDEN, 'Unauthorized access');
+    }
   }
 ) 
   

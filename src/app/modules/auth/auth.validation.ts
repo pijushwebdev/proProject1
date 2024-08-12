@@ -18,7 +18,8 @@ const refreshTokenValidation = z.object({
 const changePasswordAuthValidation = z.object({
     body: z.object({
         oldPassword: z.string({ required_error: 'Old password is required'}).trim(),
-        newPassword: z.string({required_error: 'New Password is required'}).trim()
+        newPassword: z.string({required_error: 'New Password is required'}).min(6).refine((value) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/.test(value),{
+          message: 'Password must have a upper case,lower case and special character'})
     })
 }) 
 
@@ -31,7 +32,8 @@ const forgetPasswordValidation = z.object({
 const resetPasswordValidation = z.object({
   body: z.object({
     id: z.string({required_error: 'Id is required'}).trim(),
-    newPassword: z.string({required_error: 'New Password required'}).trim()
+    newPassword: z.string({required_error: 'New Password required'}).min(6).refine((value) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/.test(value),{
+      message: 'Password must have a upper case,lower case and special character'})
   })
 })
 

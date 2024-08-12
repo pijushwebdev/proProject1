@@ -47,6 +47,7 @@ const Auth = (...requiredRoles: TUser_Role[]) => {
         if (requiredRoles && !requiredRoles.includes(role)) {
             throw new AppError(401, 'Unauthorized access!')
         }
+        
         req.user = decoded as JwtPayload;
         next();
 

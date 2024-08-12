@@ -3,6 +3,7 @@ import { TUser, UserModel } from "./user.interface";
 import bcrypt from 'bcrypt';
 import config from "../../config";
 import AppError from "../../ErrorHandlers/AppError";
+import { userStatus } from "./user.constant";
 
 
 const userSchema = new Schema<TUser, UserModel>({
@@ -25,7 +26,10 @@ const userSchema = new Schema<TUser, UserModel>({
         enum: ['student', 'admin', 'faculty'],
         required: [true, 'Role is required'],
     },
-    status: { type: String, enum: ['in-progress', 'blocked'], default: 'in-progress' },
+    status: { type: String,
+        enum: userStatus, 
+        default: 'in-progress' 
+    },
     isDeleted: { type: Boolean, default: false }
 }, {
     timestamps: true

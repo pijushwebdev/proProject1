@@ -7,23 +7,37 @@ import { USER_ROLE } from '../users/user.constant';
 
 export const router = express.Router();
 
-// createStudent from controller
-// router.post('/create-student', studentControllers.createStudent );
 
-router.get('/getAllStudents',Auth(USER_ROLE.student), studentControllers.getAllStudentsData);
+router.get('/getAllStudents',
+    Auth(USER_ROLE.faculty, USER_ROLE.admin), 
+    studentControllers.getAllStudentsData
+);
 
-router.get('/getSingleStudent/:studentId', studentControllers.getSingleStudent);
+router.get('/getSingleStudent/:studentId', 
+    Auth(USER_ROLE.faculty, USER_ROLE.admin),
+    studentControllers.getSingleStudent
+);
 
-router.get('/getStudentByAggregate/:studentId', studentControllers.getSingleStudentByAggregate);
+router.get('/getStudentByAggregate/:studentId',
+    Auth(USER_ROLE.faculty, USER_ROLE.admin),
+    studentControllers.getSingleStudentByAggregate
+);
 
 router.patch('/updateSingleStudent/:studentId',
+    Auth(USER_ROLE.faculty, USER_ROLE.admin),
     requestValidation(studentValidations.updateStudentZodSchema),
     studentControllers.updateAStudent
 );
 
-router.delete('/deleteSingleStudent/student/:studentId', studentControllers.deleteSingleStudent);
+router.delete('/deleteSingleStudent/student/:studentId', 
+    Auth(USER_ROLE.faculty, USER_ROLE.admin),
+    studentControllers.deleteSingleStudent
+);
 
-router.get('/', studentControllers.searchInStudents);
+router.get('/', 
+    Auth(USER_ROLE.faculty, USER_ROLE.admin),
+    studentControllers.searchInStudents
+);
 
 
 export const studentsRoutes = router;
