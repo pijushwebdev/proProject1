@@ -9,6 +9,7 @@ export type TAdmin = {
     designation: string;
     email: string;
     phone: string;
+    avatar?: string;
     bloodGroup: TBloodGroup;
     gender: TGender;
     dateOfBirth: string;

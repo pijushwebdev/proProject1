@@ -11,9 +11,9 @@ import { BloodGroup, Gender } from "./student.constant";
 export const NameSchema = new Schema<TName>({
     firstName: {
         type: String,
+        trim: true,
         required: [true, 'First Name is required'],
         maxlength: [20, "First Name can't be more than 20 characters"],
-        trim: true,
         //custom validation
         // validate: {
         //     validator: function (value: string) {

@@ -25,6 +25,10 @@ const adminSchema = new Schema<TAdmin, AdminModel>({
         type: AddressSchema,
         required: [true, 'address is required']
     },
+    avatar: {
+        type: String,
+        trim: true
+    },
     gender: {
         type: String,
         enum: {

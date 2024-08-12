@@ -8,7 +8,7 @@ const createStudent = asyncTryCatch( async (req, res) => {
 
     const { password, student: studentData } = req.body;
 
-    const data = await userServices.createStudentIntoDB(password, studentData); 
+    const data = await userServices.createStudentIntoDB(password, studentData, req.file); 
 
     // this will force to maintain the format
     sendResponse(res,{
@@ -22,7 +22,7 @@ const createStudent = asyncTryCatch( async (req, res) => {
 
 const createFaculty = asyncTryCatch( async (req, res) => {
     const {password, faculty: facultyData} = req.body;
-    const data = await userServices.createFacultyIntoDB(password, facultyData);
+    const data = await userServices.createFacultyIntoDB(password, facultyData, req.file);
 
     sendResponse(res, {
         statusCode: 201,
@@ -35,7 +35,7 @@ const createFaculty = asyncTryCatch( async (req, res) => {
 const createAdmin = asyncTryCatch( async (req,res) => {
     const {password, admin} = req.body;
 
-    const data = await userServices.createAdminIntoDB(password,admin);
+    const data = await userServices.createAdminIntoDB(password,admin, req.file);
 
     sendResponse(res, {
         statusCode: 201,

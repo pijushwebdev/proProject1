@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
 import config from "../../config";
 import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
@@ -12,9 +13,10 @@ import { TFaculty } from "../faculties/faculty.interface";
 import { Faculty } from "../faculties/faculty.schema";
 import { TAdmin } from "../admin/admin.interface";
 import { Admin } from "../admin/admin.schema";
+import sendImageToCloudinary from "../../utils/sendImageToCloudinary";
 
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {  //payload ---> studentData
+const createStudentIntoDB = async (password: string, payload: TStudent, file: any) => {  //payload ---> studentData
 
     const userData: Partial<TUser> = {};
 
@@ -39,6 +41,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {  //
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
+
+        const avatarName = `${userData?.id}${payload?.name?.firstName}`
+        const { secure_url } = await sendImageToCloudinary(file,avatarName) || {};
+        payload.avatar = secure_url;
 
         const newUser = await User.create([userData], { session });
 
@@ -73,7 +79,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {  //
     }
 }
 
-const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+const createFacultyIntoDB = async (password: string, payload: TFaculty, file:any) => {
     const userData: Partial<TUser> = {};
 
     userData.password = password || config.faculty_password;
@@ -84,6 +90,10 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
+
+        const avatarName = `${userData?.id}${payload?.name?.firstName}`
+        const { secure_url } = await sendImageToCloudinary(file,avatarName) || {};
+        payload.avatar = secure_url;
 
         const newUser = await User.create([userData], { session });
         if (!newUser) {
@@ -114,7 +124,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     }
 }
 
-const createAdminIntoDB = async (password: string, payload: TAdmin) => {
+const createAdminIntoDB = async (password: string, payload: TAdmin, file: any) => {
     const userData: Partial<TUser> = {};
 
     userData.password = password || config.admin_password;
@@ -125,6 +135,10 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
+
+        const avatarName = `${userData?.id}${payload?.name?.firstName}`
+        const { secure_url } = await sendImageToCloudinary(file,avatarName) || {};
+        payload.avatar = secure_url;
 
         const newUser = await User.create([userData], { session });
         if (!newUser) {
